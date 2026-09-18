@@ -1,0 +1,142 @@
+{
+  "schema_version": 2,
+  "kind": "delta",
+  "recipe": "huber_delta@location",
+  "uses_count": false,
+  "trained_through": {
+    "year": 2025,
+    "quarter": 3
+  },
+  "winner": {
+    "status": "winner_selected",
+    "model": "huber_delta@location",
+    "kind": "delta",
+    "val_mae": 23.7987576649317,
+    "val_rmse": 37.21690458493214,
+    "selection_metric": "equal-horizon mean recursive validation MAE (AUD/week)",
+    "evaluation_plan": {
+      "validation_origins": [
+        8076,
+        8080,
+        8084,
+        8088
+      ],
+      "validation_end": 8096,
+      "calibration_start": 8097,
+      "test_origin": 8100,
+      "horizons": 8
+    },
+    "selection_data_sha256": "be944979e331be0a4dc9c7588300763acd1a5eb8c218555b8aa65383a3c21d0d",
+    "source_sha256": "776a33cebcad642c93c33f33ee617c6f389f631b0b2053322a7ec67b035a216c",
+    "candidate_names": [
+      "naive_persist",
+      "naive_seasonal",
+      "lin_delta@lags",
+      "ridge_delta@lags",
+      "lasso_delta@lags",
+      "enet_delta@lags",
+      "huber_delta@lags",
+      "bayes_delta@lags",
+      "hgb_delta@lags",
+      "rf_delta@lags",
+      "et_delta@lags",
+      "gbr_delta@lags",
+      "xgb_d3_delta@lags",
+      "xgb_d6_delta@lags",
+      "lin_delta@location",
+      "ridge_delta@location",
+      "lasso_delta@location",
+      "enet_delta@location",
+      "huber_delta@location",
+      "bayes_delta@location",
+      "hgb_delta@location",
+      "rf_delta@location",
+      "et_delta@location",
+      "gbr_delta@location",
+      "xgb_d3_delta@location",
+      "xgb_d6_delta@location"
+    ]
+  },
+  "residual_bands": {
+    "percentile": 80,
+    "unit": "weekly_dollars_half_width",
+    "half_width_p80": {
+      "1": 17.2920439432753,
+      "2": 33.19015505061532,
+      "3": 48.55790375854167,
+      "4": 67.7788360154964,
+      "5": 84.06533107924102,
+      "6": 97.497132585198,
+      "7": 108.74840551860427,
+      "8": 116.32933466567295
+    },
+    "mae_by_horizon": {
+      "1": 13.178060076923217,
+      "2": 22.309921711319443,
+      "3": 33.60344674544166,
+      "4": 46.62911408881116,
+      "5": 58.766156480875466,
+      "6": 69.72723320657647,
+      "7": 78.26479003113216,
+      "8": 85.25481157710955
+    },
+    "n_by_horizon": {
+      "1": 3342,
+      "2": 3336,
+      "3": 3336,
+      "4": 3333,
+      "5": 3328,
+      "6": 3330,
+      "7": 3329,
+      "8": 3329
+    },
+    "note": "Retrospective calibration errors; empirical bands, not guaranteed individual-property coverage.",
+    "recipe": "huber_delta@location"
+  },
+  "test_metrics": [
+    {
+      "model": "huber_delta@location",
+      "test_mae": 14.87182447251211,
+      "test_rmse": 28.188107490677513,
+      "test_n": 2472
+    },
+    {
+      "model": "naive_persist",
+      "test_mae": 16.85061389554134,
+      "test_rmse": 29.505547786255974,
+      "test_n": 2472
+    },
+    {
+      "model": "naive_seasonal",
+      "test_mae": 34.30243246072727,
+      "test_rmse": 45.1712780779873,
+      "test_n": 2472
+    }
+  ],
+  "data_sha256": "9e207c89ed03855af3107968088c079c9b6426b1d639120b6abf7e3099a99600",
+  "source_sha256": "776a33cebcad642c93c33f33ee617c6f389f631b0b2053322a7ec67b035a216c",
+  "python": "3.12.3",
+  "dependencies": {
+    "numpy": "2.4.6",
+    "pandas": "3.0.6",
+    "scikit-learn": "1.9.1",
+    "xgboost": "3.4.1",
+    "joblib": "1.6.0"
+  },
+  "rows": 82025,
+  "series": 862,
+  "evaluation_plan": {
+    "validation_origins": [
+      8076,
+      8080,
+      8084,
+      8088
+    ],
+    "validation_end": 8096,
+    "calibration_start": 8097,
+    "test_origin": 8100,
+    "horizons": 8
+  },
+  "max_horizon": 8,
+  "artifact_sha256": "5839b40f1c04ae6646b178e66f21a5dc34742fb801459cb7c744afbe9afac56d"
+}

@@ -1,0 +1,50 @@
+{
+  "status": "winner_selected",
+  "model": "huber_delta@location",
+  "kind": "delta",
+  "val_mae": 23.7987576649317,
+  "val_rmse": 37.21690458493214,
+  "selection_metric": "equal-horizon mean recursive validation MAE (AUD/week)",
+  "evaluation_plan": {
+    "validation_origins": [
+      8076,
+      8080,
+      8084,
+      8088
+    ],
+    "validation_end": 8096,
+    "calibration_start": 8097,
+    "test_origin": 8100,
+    "horizons": 8
+  },
+  "selection_data_sha256": "be944979e331be0a4dc9c7588300763acd1a5eb8c218555b8aa65383a3c21d0d",
+  "source_sha256": "776a33cebcad642c93c33f33ee617c6f389f631b0b2053322a7ec67b035a216c",
+  "candidate_names": [
+    "naive_persist",
+    "naive_seasonal",
+    "lin_delta@lags",
+    "ridge_delta@lags",
+    "lasso_delta@lags",
+    "enet_delta@lags",
+    "huber_delta@lags",
+    "bayes_delta@lags",
+    "hgb_delta@lags",
+    "rf_delta@lags",
+    "et_delta@lags",
+    "gbr_delta@lags",
+    "xgb_d3_delta@lags",
+    "xgb_d6_delta@lags",
+    "lin_delta@location",
+    "ridge_delta@location",
+    "lasso_delta@location",
+    "enet_delta@location",
+    "huber_delta@location",
+    "bayes_delta@location",
+    "hgb_delta@location",
+    "rf_delta@location",
+    "et_delta@location",
+    "gbr_delta@location",
+    "xgb_d3_delta@location",
+    "xgb_d6_delta@location"
+  ]
+}

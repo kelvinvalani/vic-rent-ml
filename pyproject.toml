@@ -1,0 +1,69 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vic-rent-ml"
+version = "1.0.0"
+description = "Open-source temporal model selection and recursive Victorian rental-median forecasts"
+readme = "README.md"
+authors = [{ name = "Kelvin Valani", email = "kelvin.valani@gmail.com" }]
+license = { text = "MIT" }
+requires-python = ">=3.10"
+keywords = [
+    "machine-learning",
+    "time-series",
+    "forecasting",
+    "tabular-data",
+    "rental-market",
+    "xgboost",
+    "fastapi",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "pandas>=1.3.0",
+    "numpy>=1.20.0",
+    "scikit-learn>=1.2.0,<2",
+    "xgboost>=1.7.0,<4",
+    "joblib>=1.1.0",
+    "pydantic>=2.0.0",
+    "openpyxl>=3.0.0",
+    "fastapi>=0.100.0",
+    "uvicorn>=0.20.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "httpx>=0.24.0,<1",
+    "flake8>=7.0.0,<8",
+]
+viz = [
+    "matplotlib>=3.7.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/kelvinvalani/vic-rent-ml"
+Documentation = "https://github.com/kelvinvalani/vic-rent-ml/blob/main/docs/HOW_IT_WORKS.md"
+Paper = "https://github.com/kelvinvalani/vic-rent-ml/blob/main/docs/RESEARCH_PAPER.md"
+Issues = "https://github.com/kelvinvalani/vic-rent-ml/issues"
+
+[project.scripts]
+vic-rent-ml = "vic_rent_ml.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"

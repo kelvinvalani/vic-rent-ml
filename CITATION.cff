@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+title: "vic-rent-ml: Fair temporal model selection for Victorian rental medians"
+message: If you use this software or the accompanying study, please cite it.
+type: software
+authors:
+  - family-names: Valani
+    given-names: Kelvin
+    email: kelvin.valani@gmail.com
+repository-code: https://github.com/kelvinvalani/vic-rent-ml
+license: MIT
+version: 1.0.0
+date-released: "2026-09-18"
+abstract: >
+  An open-source Python package and research write-up for forecasting Victorian
+  suburb-group moving-annual median weekly rents. Candidates are compared with
+  recursive temporal validation; the measured winner is Huber regression on
+  quarterly rent changes with postcode features.
+keywords:
+  - rental forecasting
+  - time-series cross-validation
+  - Huber regression
+  - Victoria Australia

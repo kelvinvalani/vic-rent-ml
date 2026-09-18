@@ -1,0 +1,818 @@
+{
+  "lin_delta@lags": {
+    "parameters": {
+      "copy_X": true,
+      "fit_intercept": true,
+      "n_jobs": null,
+      "positive": false,
+      "tol": 1e-06
+    },
+    "features": {
+      "num": [
+        "quarter",
+        "year",
+        "bedrooms",
+        "median_lag_1",
+        "median_lag_4"
+      ],
+      "cat": [
+        "apartment_type"
+      ]
+    }
+  },
+  "ridge_delta@lags": {
+    "parameters": {
+      "alpha": 10.0,
+      "copy_X": true,
+      "fit_intercept": true,
+      "max_iter": null,
+      "positive": false,
+      "random_state": null,
+      "solver": "auto",
+      "tol": 0.0001
+    },
+    "features": {
+      "num": [
+        "quarter",
+        "year",
+        "bedrooms",
+        "median_lag_1",
+        "median_lag_4"
+      ],
+      "cat": [
+        "apartment_type"
+      ]
+    }
+  },
+  "lasso_delta@lags": {
+    "parameters": {
+      "alpha": 0.1,
+      "copy_X": true,
+      "fit_intercept": true,
+      "max_iter": 5000,
+      "positive": false,
+      "precompute": false,
+      "random_state": null,
+      "selection": "cyclic",
+      "tol": 0.0001,
+      "warm_start": false
+    },
+    "features": {
+      "num": [
+        "quarter",
+        "year",
+        "bedrooms",
+        "median_lag_1",
+        "median_lag_4"
+      ],
+      "cat": [
+        "apartment_type"
+      ]
+    }
+  },
+  "enet_delta@lags": {
+    "parameters": {
+      "alpha": 0.1,
+      "copy_X": true,
+      "fit_intercept": true,
+      "l1_ratio": 0.5,
+      "max_iter": 5000,
+      "positive": false,
+      "precompute": false,
+      "random_state": null,
+      "selection": "cyclic",
+      "tol": 0.0001,
+      "warm_start": false
+    },
+    "features": {
+      "num": [
+        "quarter",
+        "year",
+        "bedrooms",
+        "median_lag_1",
+        "median_lag_4"
+      ],
+      "cat": [
+        "apartment_type"
+      ]
+    }
+  },
+  "huber_delta@lags": {
+    "parameters": {
+      "alpha": 0.0001,
+      "epsilon": 1.35,
+      "fit_intercept": true,
+      "max_iter": 2000,
+      "tol": 1e-05,
+      "warm_start": false
+    },
+    "features": {
+      "num": [
+        "quarter",
+        "year",
+        "bedrooms",
+        "median_lag_1",
+        "median_lag_4"
+      ],
+      "cat": [
+        "apartment_type"
+      ]
+    }
+  },
+  "bayes_delta@lags": {
+    "parameters": {
+      "alpha_1": 1e-06,
+      "alpha_2": 1e-06,
+      "alpha_init": null,
+      "compute_score": false,
+      "copy_X": true,
+      "fit_intercept": true,
+      "lambda_1": 1e-06,
+      "lambda_2": 1e-06,
+      "lambda_init": null,
+      "max_iter": 300,
+      "tol": 0.001,
+      "verbose": false
+    },
+    "features": {
+      "num": [
+        "quarter",
+        "year",
+        "bedrooms",
+        "median_lag_1",
+        "median_lag_4"
+      ],
+      "cat": [
+        "apartment_type"
+      ]
+    }
+  },
+  "hgb_delta@lags": {
+    "parameters": {
+      "categorical_features": "from_dtype",
+      "early_stopping": false,
+      "interaction_cst": null,
+      "l2_regularization": 10,
+      "learning_rate": 0.1,
+      "loss": "squared_error",
+      "max_bins": 255,
+      "max_depth": null,
+      "max_features": 1.0,
+      "max_iter": 200,
+      "max_leaf_nodes": 15,
+      "min_samples_leaf": 20,
+      "monotonic_cst": null,
+      "n_iter_no_change": 10,
+      "quantile": null,
+      "random_state": 42,
+      "scoring": "loss",
+      "tol": 1e-07,
+      "validation_fraction": 0.1,
+      "verbose": 0,
+      "warm_start": false
+    },
+    "features": {
+      "num": [
+        "quarter",
+        "year",
+        "bedrooms",
+        "median_lag_1",
+        "median_lag_4"
+      ],
+      "cat": [
+        "apartment_type"
+      ]
+    }
+  },
+  "rf_delta@lags": {
+    "parameters": {
+      "bootstrap": true,
+      "ccp_alpha": 0.0,
+      "criterion": "squared_error",
+      "max_depth": 12,
+      "max_features": 1.0,
+      "max_leaf_nodes": null,
+      "max_samples": null,
+      "min_impurity_decrease": 0.0,
+      "min_samples_leaf": 10,
+      "min_samples_split": 2,
+      "min_weight_fraction_leaf": 0.0,
+      "monotonic_cst": null,
+      "n_estimators": 150,
+      "n_jobs": 2,
+      "oob_score": false,
+      "random_state": 42,
+      "verbose": 0,
+      "warm_start": false
+    },
+    "features": {
+      "num": [
+        "quarter",
+        "year",
+        "bedrooms",
+        "median_lag_1",
+        "median_lag_4"
+      ],
+      "cat": [
+        "apartment_type"
+      ]
+    }
+  },
+  "et_delta@lags": {
+    "parameters": {
+      "bootstrap": false,
+      "ccp_alpha": 0.0,
+      "criterion": "squared_error",
+      "max_depth": 12,
+      "max_features": 1.0,
+      "max_leaf_nodes": null,
+      "max_samples": null,
+      "min_impurity_decrease": 0.0,
+      "min_samples_leaf": 10,
+      "min_samples_split": 2,
+      "min_weight_fraction_leaf": 0.0,
+      "monotonic_cst": null,
+      "n_estimators": 150,
+      "n_jobs": 2,
+      "oob_score": false,
+      "random_state": 42,
+      "verbose": 0,
+      "warm_start": false
+    },
+    "features": {
+      "num": [
+        "quarter",
+        "year",
+        "bedrooms",
+        "median_lag_1",
+        "median_lag_4"
+      ],
+      "cat": [
+        "apartment_type"
+      ]
+    }
+  },
+  "gbr_delta@lags": {
+    "parameters": {
+      "alpha": 0.9,
+      "ccp_alpha": 0.0,
+      "criterion": "deprecated",
+      "init": null,
+      "learning_rate": 0.05,
+      "loss": "squared_error",
+      "max_depth": 3,
+      "max_features": null,
+      "max_leaf_nodes": null,
+      "min_impurity_decrease": 0.0,
+      "min_samples_leaf": 10,
+      "min_samples_split": 2,
+      "min_weight_fraction_leaf": 0.0,
+      "n_estimators": 200,
+      "n_iter_no_change": null,
+      "random_state": 42,
+      "subsample": 1.0,
+      "tol": 0.0001,
+      "validation_fraction": 0.1,
+      "verbose": 0,
+      "warm_start": false
+    },
+    "features": {
+      "num": [
+        "quarter",
+        "year",
+        "bedrooms",
+        "median_lag_1",
+        "median_lag_4"
+      ],
+      "cat": [
+        "apartment_type"
+      ]
+    }
+  },
+  "xgb_d3_delta@lags": {
+    "parameters": {
+      "objective": "reg:squarederror",
+      "base_score": null,
+      "booster": null,
+      "callbacks": null,
+      "colsample_bylevel": null,
+      "colsample_bynode": null,
+      "colsample_bytree": 0.8,
+      "device": null,
+      "early_stopping_rounds": null,
+      "enable_categorical": true,
+      "eval_metric": null,
+      "feature_types": null,
+      "feature_weights": null,
+      "gamma": null,
+      "grow_policy": null,
+      "importance_type": null,
+      "interaction_constraints": null,
+      "learning_rate": 0.05,
+      "max_bin": null,
+      "max_cat_threshold": null,
+      "max_cat_to_onehot": null,
+      "max_delta_step": null,
+      "max_depth": 3,
+      "max_leaves": null,
+      "min_child_weight": 10,
+      "missing": NaN,
+      "monotone_constraints": null,
+      "multi_strategy": null,
+      "n_estimators": 300,
+      "n_jobs": 2,
+      "num_parallel_tree": null,
+      "random_state": 42,
+      "reg_alpha": null,
+      "reg_lambda": 10,
+      "sampling_method": null,
+      "scale_pos_weight": null,
+      "subsample": 0.8,
+      "tree_method": "hist",
+      "validate_parameters": null,
+      "verbosity": null
+    },
+    "features": {
+      "num": [
+        "quarter",
+        "year",
+        "bedrooms",
+        "median_lag_1",
+        "median_lag_4"
+      ],
+      "cat": [
+        "apartment_type"
+      ]
+    }
+  },
+  "xgb_d6_delta@lags": {
+    "parameters": {
+      "objective": "reg:squarederror",
+      "base_score": null,
+      "booster": null,
+      "callbacks": null,
+      "colsample_bylevel": null,
+      "colsample_bynode": null,
+      "colsample_bytree": 0.8,
+      "device": null,
+      "early_stopping_rounds": null,
+      "enable_categorical": true,
+      "eval_metric": null,
+      "feature_types": null,
+      "feature_weights": null,
+      "gamma": null,
+      "grow_policy": null,
+      "importance_type": null,
+      "interaction_constraints": null,
+      "learning_rate": 0.05,
+      "max_bin": null,
+      "max_cat_threshold": null,
+      "max_cat_to_onehot": null,
+      "max_delta_step": null,
+      "max_depth": 6,
+      "max_leaves": null,
+      "min_child_weight": 10,
+      "missing": NaN,
+      "monotone_constraints": null,
+      "multi_strategy": null,
+      "n_estimators": 300,
+      "n_jobs": 2,
+      "num_parallel_tree": null,
+      "random_state": 42,
+      "reg_alpha": null,
+      "reg_lambda": 10,
+      "sampling_method": null,
+      "scale_pos_weight": null,
+      "subsample": 0.8,
+      "tree_method": "hist",
+      "validate_parameters": null,
+      "verbosity": null
+    },
+    "features": {
+      "num": [
+        "quarter",
+        "year",
+        "bedrooms",
+        "median_lag_1",
+        "median_lag_4"
+      ],
+      "cat": [
+        "apartment_type"
+      ]
+    }
+  },
+  "lin_delta@location": {
+    "parameters": {
+      "copy_X": true,
+      "fit_intercept": true,
+      "n_jobs": null,
+      "positive": false,
+      "tol": 1e-06
+    },
+    "features": {
+      "num": [
+        "quarter",
+        "year",
+        "bedrooms",
+        "median_lag_1",
+        "median_lag_4"
+      ],
+      "cat": [
+        "apartment_type",
+        "postcodes"
+      ]
+    }
+  },
+  "ridge_delta@location": {
+    "parameters": {
+      "alpha": 10.0,
+      "copy_X": true,
+      "fit_intercept": true,
+      "max_iter": null,
+      "positive": false,
+      "random_state": null,
+      "solver": "auto",
+      "tol": 0.0001
+    },
+    "features": {
+      "num": [
+        "quarter",
+        "year",
+        "bedrooms",
+        "median_lag_1",
+        "median_lag_4"
+      ],
+      "cat": [
+        "apartment_type",
+        "postcodes"
+      ]
+    }
+  },
+  "lasso_delta@location": {
+    "parameters": {
+      "alpha": 0.1,
+      "copy_X": true,
+      "fit_intercept": true,
+      "max_iter": 5000,
+      "positive": false,
+      "precompute": false,
+      "random_state": null,
+      "selection": "cyclic",
+      "tol": 0.0001,
+      "warm_start": false
+    },
+    "features": {
+      "num": [
+        "quarter",
+        "year",
+        "bedrooms",
+        "median_lag_1",
+        "median_lag_4"
+      ],
+      "cat": [
+        "apartment_type",
+        "postcodes"
+      ]
+    }
+  },
+  "enet_delta@location": {
+    "parameters": {
+      "alpha": 0.1,
+      "copy_X": true,
+      "fit_intercept": true,
+      "l1_ratio": 0.5,
+      "max_iter": 5000,
+      "positive": false,
+      "precompute": false,
+      "random_state": null,
+      "selection": "cyclic",
+      "tol": 0.0001,
+      "warm_start": false
+    },
+    "features": {
+      "num": [
+        "quarter",
+        "year",
+        "bedrooms",
+        "median_lag_1",
+        "median_lag_4"
+      ],
+      "cat": [
+        "apartment_type",
+        "postcodes"
+      ]
+    }
+  },
+  "huber_delta@location": {
+    "parameters": {
+      "alpha": 0.0001,
+      "epsilon": 1.35,
+      "fit_intercept": true,
+      "max_iter": 2000,
+      "tol": 1e-05,
+      "warm_start": false
+    },
+    "features": {
+      "num": [
+        "quarter",
+        "year",
+        "bedrooms",
+        "median_lag_1",
+        "median_lag_4"
+      ],
+      "cat": [
+        "apartment_type",
+        "postcodes"
+      ]
+    }
+  },
+  "bayes_delta@location": {
+    "parameters": {
+      "alpha_1": 1e-06,
+      "alpha_2": 1e-06,
+      "alpha_init": null,
+      "compute_score": false,
+      "copy_X": true,
+      "fit_intercept": true,
+      "lambda_1": 1e-06,
+      "lambda_2": 1e-06,
+      "lambda_init": null,
+      "max_iter": 300,
+      "tol": 0.001,
+      "verbose": false
+    },
+    "features": {
+      "num": [
+        "quarter",
+        "year",
+        "bedrooms",
+        "median_lag_1",
+        "median_lag_4"
+      ],
+      "cat": [
+        "apartment_type",
+        "postcodes"
+      ]
+    }
+  },
+  "hgb_delta@location": {
+    "parameters": {
+      "categorical_features": "from_dtype",
+      "early_stopping": false,
+      "interaction_cst": null,
+      "l2_regularization": 10,
+      "learning_rate": 0.1,
+      "loss": "squared_error",
+      "max_bins": 255,
+      "max_depth": null,
+      "max_features": 1.0,
+      "max_iter": 200,
+      "max_leaf_nodes": 15,
+      "min_samples_leaf": 20,
+      "monotonic_cst": null,
+      "n_iter_no_change": 10,
+      "quantile": null,
+      "random_state": 42,
+      "scoring": "loss",
+      "tol": 1e-07,
+      "validation_fraction": 0.1,
+      "verbose": 0,
+      "warm_start": false
+    },
+    "features": {
+      "num": [
+        "quarter",
+        "year",
+        "bedrooms",
+        "median_lag_1",
+        "median_lag_4"
+      ],
+      "cat": [
+        "apartment_type",
+        "postcodes"
+      ]
+    }
+  },
+  "rf_delta@location": {
+    "parameters": {
+      "bootstrap": true,
+      "ccp_alpha": 0.0,
+      "criterion": "squared_error",
+      "max_depth": 12,
+      "max_features": 1.0,
+      "max_leaf_nodes": null,
+      "max_samples": null,
+      "min_impurity_decrease": 0.0,
+      "min_samples_leaf": 10,
+      "min_samples_split": 2,
+      "min_weight_fraction_leaf": 0.0,
+      "monotonic_cst": null,
+      "n_estimators": 150,
+      "n_jobs": 2,
+      "oob_score": false,
+      "random_state": 42,
+      "verbose": 0,
+      "warm_start": false
+    },
+    "features": {
+      "num": [
+        "quarter",
+        "year",
+        "bedrooms",
+        "median_lag_1",
+        "median_lag_4"
+      ],
+      "cat": [
+        "apartment_type",
+        "postcodes"
+      ]
+    }
+  },
+  "et_delta@location": {
+    "parameters": {
+      "bootstrap": false,
+      "ccp_alpha": 0.0,
+      "criterion": "squared_error",
+      "max_depth": 12,
+      "max_features": 1.0,
+      "max_leaf_nodes": null,
+      "max_samples": null,
+      "min_impurity_decrease": 0.0,
+      "min_samples_leaf": 10,
+      "min_samples_split": 2,
+      "min_weight_fraction_leaf": 0.0,
+      "monotonic_cst": null,
+      "n_estimators": 150,
+      "n_jobs": 2,
+      "oob_score": false,
+      "random_state": 42,
+      "verbose": 0,
+      "warm_start": false
+    },
+    "features": {
+      "num": [
+        "quarter",
+        "year",
+        "bedrooms",
+        "median_lag_1",
+        "median_lag_4"
+      ],
+      "cat": [
+        "apartment_type",
+        "postcodes"
+      ]
+    }
+  },
+  "gbr_delta@location": {
+    "parameters": {
+      "alpha": 0.9,
+      "ccp_alpha": 0.0,
+      "criterion": "deprecated",
+      "init": null,
+      "learning_rate": 0.05,
+      "loss": "squared_error",
+      "max_depth": 3,
+      "max_features": null,
+      "max_leaf_nodes": null,
+      "min_impurity_decrease": 0.0,
+      "min_samples_leaf": 10,
+      "min_samples_split": 2,
+      "min_weight_fraction_leaf": 0.0,
+      "n_estimators": 200,
+      "n_iter_no_change": null,
+      "random_state": 42,
+      "subsample": 1.0,
+      "tol": 0.0001,
+      "validation_fraction": 0.1,
+      "verbose": 0,
+      "warm_start": false
+    },
+    "features": {
+      "num": [
+        "quarter",
+        "year",
+        "bedrooms",
+        "median_lag_1",
+        "median_lag_4"
+      ],
+      "cat": [
+        "apartment_type",
+        "postcodes"
+      ]
+    }
+  },
+  "xgb_d3_delta@location": {
+    "parameters": {
+      "objective": "reg:squarederror",
+      "base_score": null,
+      "booster": null,
+      "callbacks": null,
+      "colsample_bylevel": null,
+      "colsample_bynode": null,
+      "colsample_bytree": 0.8,
+      "device": null,
+      "early_stopping_rounds": null,
+      "enable_categorical": true,
+      "eval_metric": null,
+      "feature_types": null,
+      "feature_weights": null,
+      "gamma": null,
+      "grow_policy": null,
+      "importance_type": null,
+      "interaction_constraints": null,
+      "learning_rate": 0.05,
+      "max_bin": null,
+      "max_cat_threshold": null,
+      "max_cat_to_onehot": null,
+      "max_delta_step": null,
+      "max_depth": 3,
+      "max_leaves": null,
+      "min_child_weight": 10,
+      "missing": NaN,
+      "monotone_constraints": null,
+      "multi_strategy": null,
+      "n_estimators": 300,
+      "n_jobs": 2,
+      "num_parallel_tree": null,
+      "random_state": 42,
+      "reg_alpha": null,
+      "reg_lambda": 10,
+      "sampling_method": null,
+      "scale_pos_weight": null,
+      "subsample": 0.8,
+      "tree_method": "hist",
+      "validate_parameters": null,
+      "verbosity": null
+    },
+    "features": {
+      "num": [
+        "quarter",
+        "year",
+        "bedrooms",
+        "median_lag_1",
+        "median_lag_4"
+      ],
+      "cat": [
+        "apartment_type",
+        "postcodes"
+      ]
+    }
+  },
+  "xgb_d6_delta@location": {
+    "parameters": {
+      "objective": "reg:squarederror",
+      "base_score": null,
+      "booster": null,
+      "callbacks": null,
+      "colsample_bylevel": null,
+      "colsample_bynode": null,
+      "colsample_bytree": 0.8,
+      "device": null,
+      "early_stopping_rounds": null,
+      "enable_categorical": true,
+      "eval_metric": null,
+      "feature_types": null,
+      "feature_weights": null,
+      "gamma": null,
+      "grow_policy": null,
+      "importance_type": null,
+      "interaction_constraints": null,
+      "learning_rate": 0.05,
+      "max_bin": null,
+      "max_cat_threshold": null,
+      "max_cat_to_onehot": null,
+      "max_delta_step": null,
+      "max_depth": 6,
+      "max_leaves": null,
+      "min_child_weight": 10,
+      "missing": NaN,
+      "monotone_constraints": null,
+      "multi_strategy": null,
+      "n_estimators": 300,
+      "n_jobs": 2,
+      "num_parallel_tree": null,
+      "random_state": 42,
+      "reg_alpha": null,
+      "reg_lambda": 10,
+      "sampling_method": null,
+      "scale_pos_weight": null,
+      "subsample": 0.8,
+      "tree_method": "hist",
+      "validate_parameters": null,
+      "verbosity": null
+    },
+    "features": {
+      "num": [
+        "quarter",
+        "year",
+        "bedrooms",
+        "median_lag_1",
+        "median_lag_4"
+      ],
+      "cat": [
+        "apartment_type",
+        "postcodes"
+      ]
+    }
+  }
+}
