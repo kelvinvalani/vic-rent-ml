@@ -51,11 +51,17 @@ dev = [
 viz = [
     "matplotlib>=3.7.0",
 ]
+docs = [
+    "matplotlib>=3.7.0",
+    "markdown>=3.5,<4",
+    "pymdown-extensions>=10.0,<11",
+]
 
 [project.urls]
 Homepage = "https://github.com/kelvinvalani/vic-rent-ml"
 Documentation = "https://github.com/kelvinvalani/vic-rent-ml/blob/main/docs/HOW_IT_WORKS.md"
-Paper = "https://github.com/kelvinvalani/vic-rent-ml/blob/main/docs/RESEARCH_PAPER.md"
+Paper = "https://github.com/kelvinvalani/vic-rent-ml/blob/main/docs/vic-rent-ml-paper.pdf"
+Interactive = "https://kelvinvalani.github.io/vic-rent-ml/"
 Issues = "https://github.com/kelvinvalani/vic-rent-ml/issues"
 
 [project.scripts]

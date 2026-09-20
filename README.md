@@ -14,7 +14,7 @@ It forecasts a published market statistic, not the rent of an individual listing
 | **Beats persistence by** | 11.7% on that audit window |
 | **Anchor** | Trained through **2025 Q3**; forecasts **2025 Q4 through 2027 Q3** |
 
-Read the [research paper](docs/RESEARCH_PAPER.md) for the reasoning, protocol, and numbers. Read [how it works](docs/HOW_IT_WORKS.md) for a shorter walkthrough.
+Read the [research paper (PDF)](docs/vic-rent-ml-paper.pdf) — [markdown source](docs/RESEARCH_PAPER.md) — for the reasoning, protocol, and numbers. Read [how it works](docs/HOW_IT_WORKS.md) for a shorter walkthrough, or open the [interactive explainer](https://kelvinvalani.github.io/vic-rent-ml/) ([source](docs/index.html)).
 
 ## Quick start
 
@@ -95,12 +95,27 @@ src/vic_rent_ml/     Ingest, bake-off, training, recursive forecast, FastAPI ser
 tests/               Leakage, selection-reuse, and serving checks
 data/                Bundled panel and source CSVs (see docs/DATA.md)
 artifacts/           Fitted schema-2 joblib plus selection/audit files
-docs/RESEARCH_PAPER.md
+docs/RESEARCH_PAPER.md      Paper source; docs/vic-rent-ml-paper.pdf is the built PDF
+docs/index.html      Self-contained interactive explainer (GitHub Pages root)
 docs/HOW_IT_WORKS.md
+docs/build/          Scripts that regenerate the analyses, figures, PDF, and page
 docs/results/        Compact published metrics
 examples/            Local predict and synthetic quickstart
 notebooks/           Same bake-off as the CLI
 ```
+
+## Rebuild the paper and the interactive page
+
+```sh
+pip install -e ".[docs]"
+python docs/build/analysis.py             # cluster bootstrap, reproduction, deployment forecasts
+python docs/build/evaluation_illusions.py # shuffled vs temporal vs recursive scoring
+python docs/build/figures.py              # figures + LinkedIn social card
+python docs/build/paper.py                # docs/vic-rent-ml-paper.{html,pdf}
+python docs/build/interactive.py          # docs/index.html
+```
+
+Every number on both artefacts is read from `docs/results/`; nothing is hand-typed. Publishing copy for the interactive page is in [docs/PUBLISHING.md](docs/PUBLISHING.md).
 
 ## Tests
 
