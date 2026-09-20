@@ -395,7 +395,8 @@ vic-rent-ml train --panel data/rent_panel.csv --out artifacts/production_clone.j
 python docs/build/analysis.py              # bootstrap intervals + deployment forecasts
 python docs/build/evaluation_illusions.py  # protocol comparison
 python docs/build/figures.py               # all figures in docs/figures/
-python docs/build/paper.py                 # docs/vic-rent-ml-paper.pdf
+python docs/build/explainer.py             # poster + explainer gif
+python docs/build/paper.py                 # docs/vic-rent-ml-paper.{tex,pdf} (needs a TeX engine)
 ```
 
 The published artifact run used Python **3.12.3**, NumPy **2.4.6**, pandas **3.0.6**,

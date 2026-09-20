@@ -1,22 +1,24 @@
-# Publishing the paper and the interactive page
+# Publishing the paper and the visuals
 
 ## What gets published
 
-| Artefact | Path | Public URL once Pages is on |
+Everything is a static file in the repo — no site, no backend:
+
+| Artefact | Path | Built by |
 |---|---|---|
-| Interactive explainer | `docs/index.html` | `https://kelvinvalani.github.io/vic-rent-ml/` |
-| Paper | `docs/vic-rent-ml-paper.pdf` | `https://kelvinvalani.github.io/vic-rent-ml/vic-rent-ml-paper.pdf` |
-| Share image (1200×627) | `docs/figures/social_card.png` | `https://kelvinvalani.github.io/vic-rent-ml/figures/social_card.png` |
+| Paper (PDF + LaTeX source) | `docs/vic-rent-ml-paper.{pdf,tex}` | `docs/build/paper.py` |
+| Poster (one-page summary) | `docs/figures/poster.png` | `docs/build/explainer.py` |
+| Explainer GIF (recursive mechanism) | `docs/figures/explainer.gif` | `docs/build/explainer.py` |
+| Share image (1200×627) | `docs/figures/social_card.png` | `docs/build/figures.py` |
 
-Both pages are static and self-contained: the interactive page embeds its own data, SVG charts, CSS, and JavaScript, so there is no backend, no chart library, and no tracking.
+The paper is real LaTeX: `docs/build/paper.py` translates `docs/RESEARCH_PAPER.md`
+to `vic-rent-ml-paper.tex` and compiles it with the first TeX engine on `PATH` —
+[Tectonic](https://tectonic-typesetting.github.io/) (single binary, recommended),
+XeLaTeX, LuaLaTeX or pdfLaTeX. Set `TEX_ENGINE` to point at a binary that is not
+on `PATH`. Without an engine the `.tex` is still written but the build exits 1.
 
-## Turn on GitHub Pages
-
-`.github/workflows/pages.yml` deploys `docs/` on every push to `main`. It needs Pages enabled once:
-
-**Settings → Pages → Build and deployment → Source: GitHub Actions.**
-
-Then re-run the workflow (Actions → *pages* → *Run workflow*) and the site is live at the URL above.
+The README embeds the GIF and links the poster, so both are visible on the repo
+front page with no publishing step.
 
 ## Rebuild before publishing
 
@@ -25,15 +27,15 @@ pip install -e ".[docs]"
 python docs/build/analysis.py
 python docs/build/evaluation_illusions.py
 python docs/build/figures.py
+python docs/build/explainer.py
 python docs/build/paper.py
-python docs/build/interactive.py
 ```
-
-The PDF step drives headless Chrome, so a Chrome or Chromium binary must be on `PATH`.
 
 ## LinkedIn post copy
 
-Attach `docs/figures/social_card.png` (LinkedIn previews link images poorly; uploading the PNG directly gives a much larger card) and put the link in the first comment or in the body.
+Attach `docs/figures/poster.png` or `docs/figures/explainer.gif` (both upload
+directly; the GIF animates in the feed), or `docs/figures/social_card.png` for a
+flat 1200×627 card, and put the repo link in the body or first comment.
 
 > Most rent-prediction demos report an R² above 0.99. Mine does too — and that number is worthless.
 >
@@ -53,15 +55,12 @@ Attach `docs/figures/social_card.png` (LinkedIn previews link images poorly; upl
 > • Only three of the eight forecast horizons have real outcomes yet. The other five ship with calibrated but unaudited bands, stated rather than hidden.
 > • It forecasts group medians, not your apartment.
 >
-> Interactive walkthrough (no login, no backend): <PAGES URL>
-> Paper, code, and every number: https://github.com/kelvinvalani/vic-rent-ml
+> Paper, code, poster and every number: https://github.com/kelvinvalani/vic-rent-ml
 >
 > Data: Homes Victoria Rental Report (RTBA bond lodgements), CC BY 4.0.
-
-Replace `<PAGES URL>` after Pages is live.
 
 ### Shorter variant
 
 > I scored the same rent-forecasting model three ways. Shuffled split: $7.23 average error per week. Temporal split, one step: $12.04. The way it actually runs — eight quarters ahead, eating its own predictions: $23.80.
 >
-> Only the last one is real. Here is the full bake-off of 26 candidates over 862 suburb series, including the six a "rent stays the same" baseline beat: <PAGES URL>
+> Only the last one is real. Full bake-off of 26 candidates over 862 suburb series, including the six a "rent stays the same" baseline beat: https://github.com/kelvinvalani/vic-rent-ml
