@@ -358,6 +358,12 @@ def _engine() -> list[str] | None:
         found = shutil.which(name)
         if found:
             return [found]
+    # Tectonic's default single-binary location on Windows.
+    local = os.environ.get("LOCALAPPDATA")
+    if local:
+        candidate = Path(local) / "tectonic" / "tectonic.exe"
+        if candidate.exists():
+            return [str(candidate)]
     return None
 
 
