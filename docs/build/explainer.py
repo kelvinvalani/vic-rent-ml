@@ -1,9 +1,11 @@
-"""Build the project's public-facing visuals: a poster PNG and a small animated GIF.
+"""Build the project's public-facing visuals: a poster PNG and animated GIFs.
 
-``docs/figures/poster.png``    — one-page summary: the shipped model's pipeline on
-                                 top, the Brunswick forecast (the output) below.
-``docs/figures/explainer.gif`` — short animation of the recursive eight-quarter
-                                 mechanism: each forecast feeds back as the next lag.
+``docs/figures/poster.png``     — one-page summary: the shipped model's pipeline on
+                                  top, the Brunswick forecast (the output) below.
+``docs/figures/explainer.gif``  — short animation of the recursive eight-quarter
+                                  mechanism: each forecast feeds back as the next lag.
+``docs/figures/linkedin.gif``   — Brunswick cone + shuffled vs temporal vs recursive MAE.
+``docs/figures/linkedin_card.png`` — static square of the two-year frame (fallback).
 
 Every number is read from ``docs/results/`` and ``data/rent_panel.csv``; nothing is
 hand-typed. Run: ``python docs/build/explainer.py``
@@ -11,12 +13,14 @@ hand-typed. Run: ``python docs/build/explainer.py``
 from __future__ import annotations
 
 import json
+from io import BytesIO
 from pathlib import Path
 
 import matplotlib
 import pandas as pd
 from matplotlib import animation
 from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
+from PIL import Image
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402  (backend must be set first)
@@ -31,6 +35,9 @@ MUTED = "#94a3b8"
 BASELINE = "#0f766e"
 CARD = "#f1f5f9"
 LINE = "#dbe3ec"
+PEACH = "#f6b48a"
+MIST = "#bcd2e6"
+TRACK = "#1a3a58"
 
 SERIES = ("Brunswick", "flat", 2)
 HISTORY_FROM = 2015 * 4  # panel period encoding, same as figures.forecast_example
@@ -298,11 +305,219 @@ def gif() -> Path:
     return path
 
 
-def main() -> None:
+# ----------------------------------------------------------- linkedin ----
+
+def _money(value: float, digits: int = 0) -> str:
+    """Currency for matplotlib text. Unescaped $ enters math mode and eats spaces."""
+    return f"\\${value:.{digits}f}"
+
+
+def _linkedin_tables() -> dict:
+    """Protocol MAEs, residual widths, and panel size used by the LinkedIn figure."""
+    val = pd.read_csv(RESULTS / "validation_horizons.csv")
+    bakeoff = pd.read_csv(RESULTS / "bakeoff_metrics.csv").set_index("model")
+    illusions = json.loads((RESULTS / "evaluation_illusions.json").read_text(encoding="utf-8"))
+    panel = pd.read_csv(ROOT / "data" / "rent_panel.csv")
+    usable = panel.dropna(subset=["median", "median_lag_1", "median_lag_4"])
+    return {
+        "huber": val[val["model"] == "huber_delta@location"].set_index("horizon"),
+        "bands": pd.read_csv(RESULTS / "residual_bands.csv").set_index("horizon"),
+        "val_mae": float(bakeoff.loc["huber_delta@location", "val_mae"]),
+        "shuffled_mae": float(illusions["shuffled_split_one_step"]["mae"]),
+        "shuffled_r2": float(illusions["shuffled_split_one_step"]["r2_on_level"]),
+        "temporal_mae": float(illusions["temporal_split_one_step"]["mae"]),
+        "n_series": int(usable.groupby(["suburb_group", "apartment_type", "bedrooms"]).ngroups),
+    }
+
+
+def _metric_cells(horizon: int, history: pd.DataFrame, future: pd.DataFrame,
+                  tables: dict) -> list[tuple[str, str, str]]:
+    """Three labelled facts. Same structure every frame; only the values move."""
+    anchor = float(history["median"].iloc[-1])
+    if horizon == 0:
+        return [
+            ("Origin", "2025 Q3", "last observed quarter"),
+            ("Observed median", f"{_money(anchor)} / week", "Brunswick 2-bedroom flats"),
+            ("Protocol", "8 recursive steps", "predicted lags after origin"),
+        ]
+    row = future.iloc[horizon - 1]
+    half = float(tables["bands"].loc[horizon, "p80"])
+    huber_mae = float(tables["huber"].loc[horizon, "val_mae"])
+    return [
+        ("Horizon", f"{horizon} of 8", str(row["label"])),
+        ("Empirical 80% band",
+         f"{_money(float(row['lower']))} to {_money(float(row['upper']))}",
+         f"half-width {_money(half)} / week"),
+        ("Validation MAE", f"{_money(huber_mae, 2)} / week",
+         f"shuffled split {_money(tables['shuffled_mae'], 2)}"),
+    ]
+
+
+def _draw_metrics(ax, cells: list[tuple[str, str, str]]) -> None:
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.axis("off")
+    ax.plot([0.0, 1.0], [1.0, 1.0], color=LINE, linewidth=0.8, transform=ax.transAxes, clip_on=False)
+    ax.plot([0.0, 1.0], [0.0, 0.0], color=LINE, linewidth=0.8, transform=ax.transAxes, clip_on=False)
+    for index, (label, value, note) in enumerate(cells):
+        x = 0.02 + index * 0.33
+        ax.text(x, 0.78, label.upper(), fontsize=7.2, color=MUTED, fontweight="bold", va="top")
+        ax.text(x, 0.48, value, fontsize=12.5, color=INK, fontweight="bold", va="center")
+        ax.text(x, 0.18, note, fontsize=8.0, color="#475569", va="center")
+
+
+def _draw_protocol_split(ax, tables: dict, horizon: int) -> None:
+    """Paper panel: same Huber model under three scoring protocols.
+
+    Shuffled and temporal bars stay fixed (the dashboard quizzes). The recursive
+    bar is the protocol the forecast above actually runs, and grows with horizon.
+    """
+    shuffled = tables["shuffled_mae"]
+    temporal = tables["temporal_mae"]
+    if horizon:
+        recursive = float(tables["huber"].loc[horizon, "val_mae"])
+        rec_label = f"horizon {horizon}"
+    else:
+        recursive = 0.0
+        rec_label = "this forecast"
+    values = [shuffled, temporal, recursive]
+    labels = [
+        f"Shuffled 80/20\nR² = {tables['shuffled_r2']:.2f}",
+        "Temporal split\none step",
+        f"Recursive\n{rec_label}",
+    ]
+    colours = [MUTED, "#64748b", ACCENT]
+    bars = ax.bar(range(3), values, color=colours, width=0.62)
+    ax.set_xticks(range(3), labels)
+    ymax = float(tables["huber"]["val_mae"].max()) * 1.32
+    ax.set_ylim(0, ymax)
+    for bar, value in zip(bars, values):
+        x = bar.get_x() + bar.get_width() / 2
+        if value <= 0:
+            continue
+        ax.text(x, value + ymax * 0.025, f"MAE {_money(value, 2)}", ha="center",
+                fontsize=8.5, color=INK, fontweight="bold")
+    ax.set_ylabel("MAE (AUD / week)", fontsize=8)
+    ax.set_title("Same model, three evaluation protocols", color=INK, fontsize=9.5, loc="left", pad=4)
+    _style_axes(ax)
+    ax.tick_params(labelsize=7.5)
+    ax.grid(axis="x", visible=False)
+
+
+def _render_band_frame(history: pd.DataFrame, future: pd.DataFrame, tables: dict,
+                       horizon: int, size: int = 1080) -> Image.Image:
+    """One square frame: Brunswick cone plus the three-protocol MAE comparison."""
+    hx, fx = _forecast_xy(history, future)
+    y_lo = min(history["median"].min(), future["lower"].min()) - 18
+    y_hi = max(history["median"].max(), future["upper"].max()) + 18
+    anchor_y = float(history["median"].iloc[-1])
+    dpi = 120
+    fig = plt.figure(figsize=(size / dpi, size / dpi), dpi=dpi)
+    fig.patch.set_facecolor("white")
+
+    fig.text(0.07, 0.955, "TECHNICAL NOTE  |  HOMES VICTORIA RENTAL REPORT",
+             color=ACCENT, fontsize=8.2, fontweight="bold", transform=fig.transFigure)
+    fig.text(0.07, 0.905, "Recursive eight-quarter forecast",
+             color=INK, fontsize=18, fontweight="bold", transform=fig.transFigure, va="center")
+    fig.text(0.07, 0.862,
+             "Brunswick, 2-bedroom flats. Moving-annual median weekly rent.",
+             color="#475569", fontsize=10, transform=fig.transFigure, va="center")
+
+    ax = fig.add_axes((0.12, 0.40, 0.81, 0.42))
+    ax.plot(hx, history["median"], color=INK, linewidth=2.0, label="Observed median")
+    ax.axvline(hx[-1], color=LINE, linewidth=1.0, linestyle=":")
+    if horizon:
+        rows = future.iloc[:horizon]
+        xs = [hx[-1]] + fx[:horizon]
+        lows = [anchor_y] + list(rows["lower"])
+        highs = [anchor_y] + list(rows["upper"])
+        ax.fill_between(xs, lows, highs, color=ACCENT, alpha=0.16,
+                        label="Empirical 80th-percentile band")
+        ax.plot(xs, [anchor_y] * len(xs), color=BASELINE, linestyle="--", linewidth=1.4,
+                label="Last-quarter persistence")
+        ax.plot(xs, [anchor_y] + list(rows["prediction"]),
+                color=ACCENT, marker="o", markersize=4.5, linewidth=2.0, label="Huber forecast")
+        last_x = xs[-1]
+        last_pred = float(rows["prediction"].iloc[-1])
+        ax.plot([last_x, last_x], [float(rows["lower"].iloc[-1]), float(rows["upper"].iloc[-1])],
+                color=ACCENT, linewidth=1.1, alpha=0.75)
+        ax.text(last_x + 0.18, last_pred, f"{_money(last_pred)}", color=ACCENT,
+                fontsize=9, fontweight="bold", va="center")
+    ax.set_xlim(hx[0] - 0.15, fx[-1] + 0.55)
+    ax.set_ylim(y_lo, y_hi)
+    ax.set_xlabel("Year", fontsize=9)
+    ax.set_ylabel("AUD / week", fontsize=9)
+    ax.legend(frameon=False, fontsize=7.8, loc="upper left", ncol=2)
+    _style_axes(ax)
+
+    ax_stats = fig.add_axes((0.07, 0.255, 0.86, 0.105))
+    _draw_metrics(ax_stats, _metric_cells(horizon, history, future, tables))
+
+    ax_mae = fig.add_axes((0.12, 0.075, 0.81, 0.155))
+    _draw_protocol_split(ax_mae, tables, horizon)
+
+    fig.text(
+        0.07, 0.018,
+        f"Same Huber model. Shuffled-split MAE {_money(tables['shuffled_mae'], 2)} "
+        f"(R² = {tables['shuffled_r2']:.2f}). Equal-horizon recursive MAE "
+        f"{_money(tables['val_mae'], 2)}. {tables['n_series']} series, 2001 Q1 to 2025 Q3.",
+        color="#64748b", fontsize=7.4, transform=fig.transFigure,
+    )
+
+    buf = BytesIO()
+    fig.savefig(buf, format="png", facecolor="white")
+    plt.close(fig)
+    buf.seek(0)
+    image = Image.open(buf).convert("RGB")
+    image.load()
+    buf.close()
+    return image
+
+
+def linkedin_card() -> Path:
+    """Static square of the two-year cone — LinkedIn fallback if the GIF is skipped."""
+    history, future = _load_series()
+    tables = _linkedin_tables()
+    path = FIGURES / "linkedin_card.png"
+    _render_band_frame(history, future, tables, horizon=8, size=1080).save(path)
+    print(f"wrote {path.relative_to(ROOT)}")
+    return path
+
+
+def linkedin_gif() -> Path:
+    """Square looping GIF: cone opens while the recursive protocol MAE grows."""
+    history, future = _load_series()
+    tables = _linkedin_tables()
+    # Even walk along the horizon; hold the origin and the finished two-year frame.
+    story: list[tuple[int, int]] = [(0, 1600)] + [(h, 750) for h in range(1, 8)] + [(8, 2800)]
+    frames = [_render_band_frame(history, future, tables, horizon) for horizon, _ in story]
+    durations = [hold for _, hold in story]
+    path = FIGURES / "linkedin.gif"
+    frames[0].save(
+        path,
+        save_all=True,
+        append_images=frames[1:],
+        duration=durations,
+        loop=0,
+        optimize=True,
+        disposal=2,
+    )
+    print(f"wrote {path.relative_to(ROOT)}")
+    return path
+
+
+def main(targets: list[str] | None = None) -> None:
     FIGURES.mkdir(parents=True, exist_ok=True)
-    poster()
-    gif()
+    selected = set(targets or ["poster", "gif", "linkedin"])
+    if "poster" in selected:
+        poster()
+    if "gif" in selected:
+        gif()
+    if "linkedin" in selected:
+        linkedin_card()
+        linkedin_gif()
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+    main(sys.argv[1:] or None)

@@ -2,16 +2,16 @@
 
 Open-source forecasting of Victorian **suburb-group moving-annual median weekly rents**.
 
-This repository is the standalone machine-learning package behind that work: the training code, the temporal bake-off, a fitted model you can run locally, and a research write-up of why the pipeline is built this way.
+This is the model behind **MyRent**: a two-year look-ahead of the official suburb-group median, with an error band that is allowed to get wide. The repo is the training code, the temporal bake-off, a fitted artifact you can query locally, and a technical note of why the error looks like **$24/week** rather than the **$7** a shuffled split prints.
 
-It forecasts a published market statistic, not the rent of an individual listing.
+It forecasts a published market statistic, not the rent of an individual listing, and it is not a new algorithm. Last-quarter persistence is within about **$2/week** of the best learned model. The useful output is the band.
 
 | | |
 |---|---|
 | **Winner** | Huber regression on the quarterly change in the median, with postcode features (`huber_delta@location`) |
 | **Validation MAE** | $23.80 / week across eight recursive horizons |
 | **Held-out audit MAE** | $14.87 / week on 2025 Q1–Q3 |
-| **Beats persistence by** | 11.7% on that audit window |
+| **Beats persistence by** | ~$2 / week (11.7%) on that audit window |
 | **Anchor** | Trained through **2025 Q3**; forecasts **2025 Q4 through 2027 Q3** |
 
 Read the [research paper (PDF)](docs/vic-rent-ml-paper.pdf) — [markdown source](docs/RESEARCH_PAPER.md) — for the reasoning, protocol, and numbers. Read [how it works](docs/HOW_IT_WORKS.md) for a shorter walkthrough, or see the [poster](docs/figures/poster.png) for the one-page summary.

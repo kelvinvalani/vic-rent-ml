@@ -1,4 +1,4 @@
-# Fair temporal model selection for Victorian rental medians
+# Measuring two-year forecast error for Victorian rental medians
 
 **Author:** Kelvin Valani  
 **Repository:** [github.com/kelvinvalani/vic-rent-ml](https://github.com/kelvinvalani/vic-rent-ml)  
@@ -7,27 +7,31 @@
 
 ## Abstract
 
-We compare 24 learned forecasting configurations and two persistence baselines for
-Victorian suburb-group moving-annual median rents. Every candidate is scored under one
-recursive temporal protocol: expanding-window origins, eight-quarter forecasts that feed
-their own predictions back into lag features, and a single pre-registered objective. No
-family is preferred and no tree-over-linear hurdle is applied.
+This is a measurement on one official series, not a new forecasting method.
+Expanding-window evaluation, recursive multi-step scoring, and a last-value baseline are
+textbook (Hyndman and Athanasopoulos). Rental dashboards still skip them. We apply them
+to Homes Victoria suburb-group moving-annual median rents and report the error a two-year
+product actually earns.
 
-Huber regression on quarterly changes with postcode categories wins with equal-horizon
-validation MAE **23.80**, against **25.94** for the best tested XGBoost configuration and
-**25.98** for last-quarter persistence. The frozen winner is then audited once on
-2025 Q1–Q3: MAE **14.87** versus **16.85** for persistence, an **11.74%** reduction. A
-suburb-group cluster bootstrap puts the audit gap at **1.98** (95% interval
-**1.45 – 2.49**) AUD/week, so the ranking is stable to resampling whole suburb groups —
-while remaining a statement about this panel, not a guarantee for the next regime.
+We compare 24 learned configurations and two persistence baselines under one recursive
+protocol: expanding-window origins, eight-quarter forecasts that feed their own
+predictions back into lag features, and a single pre-registered objective. No family is
+preferred. The same Huber specification scores **7.23** MAE under a shuffled 80/20 split
+(\(R^2 = 0.993\)), **12.04** under a one-step temporal split, and **23.80** under the
+eight-quarter protocol the shipped artifact runs. We report **23.80**. The first number
+is the one that gets posted; it is three times too optimistic for a two-year forecast.
 
-The same estimator and features score **7.23** MAE under a shuffled 80/20 split and
-**12.04** under a one-step temporal split. The protocol, not the algorithm, drives most of
-the apparent accuracy in this problem class; we report the **23.80** figure because it is
-the only one that matches what the shipped artifact actually does.
+Under that protocol Huber on the quarterly change wins this grid at **23.80**, against
+**25.94** for the best tested XGBoost configuration and **25.98** for last-quarter
+persistence. A frozen 2025 Q1–Q3 audit is **14.87** versus **16.85** for persistence —
+about **2** AUD/week. A suburb-group cluster bootstrap puts that audit gap at **1.98**
+(95% interval **1.45 – 2.49**). The ranking is stable on this panel. The practical
+finding is that the obvious baseline almost won.
 
 These results concern aggregate rent medians, not individual property valuations, and do
-not establish that linear models generally outperform gradient boosting.
+not establish that linear models outperform gradient boosting. The tree grid is light,
+training is one-step while scoring is recursive, and calendar year as a numeric feature
+lets linear models extrapolate a drift that trees cannot.
 
 ## 1. Initial thinking
 
@@ -35,21 +39,28 @@ The project began with a specific suspicion rather than a model wish-list. Renta
 dashboards routinely quote \(R^2 > 0.99\) on suburb rent data. That number is almost
 always an artifact: last quarter's median explains nearly all of this quarter's median, so
 any model that is shown the true previous value looks excellent. The starting question was
-therefore not *which algorithm is best?* but *what is the smallest honest number this
-problem admits, and does any learned model beat doing nothing?*
+therefore not *which algorithm is best?* People want MAE small, and a shuffled split will
+happily print **7.23**. The honest question is *what is the lowest error we can claim
+without cheating the test?* — and, given how strong last quarter already is, *does any
+learned model beat doing nothing?* Doing nothing means last-quarter persistence: next
+quarter's median equals this quarter's, or \(\hat f \equiv 0\) in the notation below.
 
 Four hypotheses were written down before the bake-off was run.
 
 | # | Starting hypothesis | Outcome |
 |---|---|---|
-| H1 | Persistence will be a hard baseline, because the target is a smoothed moving-annual median. | **Supported.** Persistence (25.98) still beats 6 of the 24 learned configurations, including four boosting variants. |
-| H2 | Gradient boosting will win, as it usually does on tabular panels. | **Not supported here.** The best XGBoost variant scores 25.94, behind all twelve linear and robust-linear configurations. |
-| H3 | Level-targeted trees will clip during a boom, because a tree cannot extrapolate beyond its training leaves. | **Supported**, and pre-empted by modelling the change rather than the level. |
-| H4 | Most of the measured accuracy will come from the evaluation protocol, not the estimator. | **Strongly supported** (Section 7.2): the same model spans 7.23 → 23.80 MAE across three protocols. |
+| H1 | Persistence will be a hard baseline, because the target is a smoothed moving-annual median. | **Supported.** Persistence (25.98) still beats 6 of the 24 learned configurations, and all six are boosting variants. |
+| H2 | Gradient boosting will win, as it usually does on tabular panels. | **Not supported here**, with confounds. Best XGBoost scores 25.94, behind all twelve linear configurations — on a light tree grid, with `year` as a numeric feature that linear models can extrapolate and trees cannot. |
+| H3 | Level-targeted trees will clip during a boom, because a tree cannot extrapolate beyond its training leaves. | **Not tested.** Treated as a design constraint: every learned candidate predicts the change, so this bake-off cannot confirm clipping. |
+| H4 | Most of the measured accuracy will come from the evaluation protocol, not the estimator. | **Strongly supported** (Section 7.2): the same model spans 7.23 → 23.80 MAE across three protocols. The three scores use different pair sets, so the comparison is directional. |
 
-H2 failing is the interesting result, and it is reported as an outcome of *this* specified
-grid on *this* target — not as a general claim about boosting. H4 is why the paper spends
-more space on the protocol than on the estimator.
+H4 is the result this paper is for, and it is not a discovery of time-series
+cross-validation. The protocol is standard. What is not standard is still publishing the
+shuffled \(R^2\). This note exists to put the honest magnitude on a public series that
+two-year rent tools quote: **7.23** on the leaky quiz, **23.80** on the product quiz, and
+last-quarter persistence within about **2** AUD/week of the best learned model. H2 failing
+is reported as an outcome of *this* specified grid on *this* target — not as a general
+claim about boosting, and not as the reason to write the paper.
 
 ## 2. Target and source data
 
@@ -68,8 +79,9 @@ After requiring observed rents and exact calendar lag-1 and lag-4 values, the pa
 contains **82,025 rows**, **862 dwelling series** and **146 suburb groups**, spanning
 **2001 Q1 – 2025 Q3**, with **142 observed representative postcodes**. The source's
 `CBD-St Kilda Rd` group has **297 rows without a postcode**; these keep an explicit missing
-category and remain addressable by group name. Bedroom categories 1–4 are supported;
-unsupported combinations are refused rather than assigned invented rents.
+category and remain addressable by group name. The published sheets cover 1–3 bedroom
+flats and 2–4 bedroom houses; other bedroom combinations are refused rather than assigned
+invented rents.
 
 Lag construction joins series by exact quarter offsets — a gap is never treated as one
 quarter merely because two rows are adjacent. Duplicate series-quarter keys, nonpositive
@@ -120,6 +132,12 @@ lag-4 (falling back to \(y_{s,T}\) when an exact older lag is missing). No reali
 after \(T\) enters any feature. This is exactly the computation the shipped artifact
 performs, which is the point: the evaluation and the product run the same code path.
 
+Training is not recursive. \(\hat f\) is fit one-step, on observed lags. Selection then
+scores the eight-quarter roll-forward. A model that predicts a small, stable drift can
+therefore look better at long horizons than a model that fits one-step residuals more
+tightly. That is a real limitation of this bake-off, not an independent reason to prefer
+Huber outside it.
+
 ### 3.4 Scoring
 
 With \(\mathcal{P}_h\) the set of forecast/outcome pairs at horizon \(h\):
@@ -166,8 +184,10 @@ the price paid for it, which is the part usually omitted.
 
 | Decision | Alternative rejected | Why | What it costs |
 |---|---|---|---|
-| Predict \(\Delta\), anchor on \(y_{t-1}\) | Predict the level directly | Nominal rents trend; tree ensembles cannot emit a level above their highest training leaf and clip after a boom | Errors accumulate along the recursion; a biased \(\hat f\) drifts |
-| Recursive eight-quarter scoring | One-step-ahead scoring | Production never has the realised lag-1 for horizon 5 | Roughly halves the headline accuracy (Section 7.2) |
+| Predict \(\Delta\), anchor on \(y_{t-1}\) | Predict the level directly | Nominal rents trend; tree ensembles cannot emit a level above their highest training leaf and clip after a boom. This was a design assumption, not a comparison run in the zoo. | Errors accumulate along the recursion; a biased \(\hat f\) drifts |
+| Recursive eight-quarter scoring | One-step-ahead scoring | Production never has the realised lag-1 for horizon 5 | Roughly triples the shuffled-split MAE (Section 7.2) |
+| Fit \(\hat f\) on observed lags | Recursive training, or a direct eight-horizon head | Keeps every family on the same supervised fit | Trees that overfit one-step residuals can degrade when rolled forward; a stable linear drift recurses more cleanly. Confounds H2. |
+| Keep `year` as a numeric feature | Drop calendar time, or use non-extrapolating year dummies | Lets every family see a trend in \(\Delta\) | Linear models can emit a drift outside the training year range; trees cannot. Also confounds H2. |
 | Expanding-window origins | Random 80/20 split | Overlapping moving-annual windows put the same information on both sides of a shuffle | Far fewer scored pairs; the pipeline refuses a panel that ends at the test origin |
 | Equal-horizon mean | Pooled mean over all pairs | Stops horizon 1 dominating the ranking | Later, noisier horizons have more influence on selection |
 | Two persistence baselines eligible to win | Learned-model-only shortlist | If nothing beats "no change", that is the finding | Risks shipping a baseline — accepted |
@@ -190,8 +210,12 @@ both feature variants; randomized estimators use seed 42. Full settings are in
 `docs/results/candidate_parameters.json`.
 
 This is a finite specified grid, not exhaustive hyperparameter search — a real limitation
-for the tree families, which are more tuning-sensitive than the linear ones. Numeric
-imputation and scaling and categorical one-hot encoding are fitted **inside** each fold.
+for the tree families, which are more tuning-sensitive than the linear ones. Linear models
+also get a second advantage this grid does not remove: `year` is a numeric feature, so a
+linear \(\hat f\) can emit a drift outside the training year range and a tree cannot.
+Persistence is the nested no-change model, which is already a random walk on the level;
+the zoo does not include ETS, ARIMA, or a pooled AR on \(\Delta\). Numeric imputation and
+scaling and categorical one-hot encoding are fitted **inside** each fold.
 
 ## 6. Temporal protocol
 
@@ -239,10 +263,18 @@ Best feature variant per family (the full 26-row ranking is in
 | XGBoost, depth 3 | lags | 26.32 | 40.31 |
 | Seasonal persistence | — | 30.60 | 45.19 |
 
-Huber improves on persistence by **8.40%**. Adding postcode moves Huber only from
-**23.857** to **23.799** — a descriptive difference of 0.06 AUD/week, not evidence of a
-reliable location effect. The rule nevertheless selects the lower score, exactly as it
-would have for a similarly small tree advantage.
+Huber improves on persistence by **8.40%**, which is **2.18** AUD/week on the validation
+window — a stable ranking increment, not a large pricing increment. Adding postcode moves
+Huber only from **23.857** to **23.799** — a descriptive difference of 0.06 AUD/week, not
+evidence of a reliable location effect. The rule nevertheless selects the lower score,
+exactly as it would have for a similarly small tree advantage.
+
+Within the recursive protocol, persistence is better at horizon 1 (MAE **8.79** against
+Huber **9.16**). Huber's advantage is at the later, self-fed horizons, where a small
+predicted drift has had time to accumulate. That is consistent with a linear calendar
+effect surviving the roll-forward, and it is also why one-step training plus recursive
+scoring can favour a stable-drift model over a tree that fits one-step residuals more
+tightly.
 
 ![Per-origin MAE. The 2021 Q4 origin is the hardest window for every model, and persistence wins the 2019 Q4 origin outright.](figures/origin_variation.png)
 
@@ -255,7 +287,9 @@ would have for a similarly small tree advantage.
 
 The winner does not beat persistence at every origin. Strong persistence plus strong robust
 linear performance is consistent with a smooth target and heavy-tailed changes; Huber's
-reduced outlier sensitivity is a plausible explanation, not a causal finding.
+reduced outlier sensitivity is a plausible explanation, not a causal finding. Four origins
+are a thin selection window: a 0.06 postcode gap chose the shipped model, and the 2019 Q4
+origin would have chosen persistence.
 
 ### 7.2 The protocol, not the model, sets the headline
 
@@ -272,10 +306,14 @@ Holding the estimator and features fixed and changing only the evaluation protoc
 
 A shuffled split lets overlapping moving-annual windows and neighbouring quarters of the
 same series appear on both sides of the partition; one-step scoring hands the model an
-observed lag it will never have at horizon 5. Either choice would have made this project
-look three times better and would have been wrong. Within the recursive protocol, error
-grows from **9.16** at \(h=1\) to **40.24** at \(h=8\) — an honest description of how far
-ahead this target is actually predictable.
+observed lag it will never have at horizon 5. The shuffled protocol would have made this
+project look three times better; one-step scoring, about twice as good. Both would have
+been the wrong evaluation. The three rows are not scored on the same pairs, so the
+comparison is directional rather than a controlled contrast on a shared test set. The
+ordering is the point: leaky and teacher-forced protocols look much better than the
+protocol the product runs. Within the recursive protocol, error grows from **9.16** at
+\(h=1\) to **40.24** at \(h=8\) — an honest description of how far ahead this target is
+actually predictable.
 
 ### 7.3 Frozen-winner audit
 
@@ -286,9 +324,12 @@ ahead this target is actually predictable.
 | Seasonal persistence | 34.30 | 45.17 | 2,472 |
 
 These are equal-horizon averages over the **three** observable test horizons, so they are
-not comparable with the eight-horizon validation average; the audit window is also simply
-calmer than 2021–22. The winner was frozen before this audit and no other candidate was
-re-ranked on it.
+not comparable with the eight-horizon validation average. The 2021 Q4 origin was the hard
+multi-step window; 2025 is a shorter, later slice, not a matched difficulty check. The
+one-step audit error (11.07) is in fact *higher* than the one-step validation error
+(9.16). The winner was frozen before this audit and no other candidate was re-ranked on
+it. The 1.98 AUD/week gap is about 0.3% of a 600 AUD/week series such as Brunswick
+two-bedroom flats — statistically stable on this panel, small as a rent increment.
 
 ![Left: per-horizon validation MAE for Huber and persistence against the calibrated 80th-percentile half-width. Right: observed audit coverage at the only three horizons with outcomes.](figures/horizon_errors.png)
 
@@ -320,10 +361,12 @@ recomputing the equal-horizon MAE gap between the winner and persistence on each
 | Frozen audit (2025 Q1 – Q3) | 2,472 | 14.87 | 16.85 | **1.98** | [1.45, 2.49] | 100% | 63.2% |
 
 The interval excludes zero in both windows and no bootstrap draw reverses the ranking, so
-the advantage is not an artifact of a few influential suburb groups. Two caveats keep this
-honest: the interval describes resampling variability of the *measured* gap on this panel,
-not out-of-sample performance under a regime change; and the winner still loses on ~36% of
-individual series.
+the advantage is not an artifact of a few influential suburb groups. Three caveats keep
+this honest. The interval describes resampling variability of the *measured* gap on this
+panel, not out-of-sample performance under a regime change. The winner still loses on ~36%
+of individual series. And the validation interval does not account for model selection:
+Huber was chosen on that same window, so the audit interval is the one that does not reuse
+the ranking data.
 
 ### 7.5 Where the error actually lives
 
@@ -342,8 +385,12 @@ support significance claims of their own.
 
 For Brunswick two-bedroom flats (anchor 600 AUD/week at 2025 Q3), the refit model forecasts
 604 AUD/week for 2025 Q4 (band 587–622) and 633 for 2027 Q3 (band 516–749). The point path
-is close to a gentle linear rise; the honest content of the forecast is the band, which
-nearly quadruples in width over eight quarters. Full per-series forecasts are in
+is close to a gentle linear rise — persistence plus a small drift. The usable content for
+a two-year planning tool is the band, which widens from \(\pm 17\) to \(\pm 116\) AUD/week
+over eight quarters, a factor of about 6.7. Next quarter is relatively tight. Eight
+quarters out, even the *typical published median* for this series is only known to within
+roughly \(\pm 116\) AUD/week. That is still worth showing: a false-precise 633 is the
+harmful number, not the wide interval. Full per-series forecasts are in
 `docs/results/deployment_forecasts.csv`.
 
 ## 8. What this model does not do
@@ -351,15 +398,26 @@ nearly quadruples in width over eight quarters. Full per-series forecasts are in
 - It does **not** value individual properties. The bands describe the error of a
   *group median*, and must never be read as the range containing 80% of individual rents.
 - It does **not** establish that linear models beat gradient boosting in general — only
-  that in this grid, on this target, under this protocol, they did.
+  that in this grid, on this target, under this protocol, they did. The comparison is
+  further confounded by a light tree grid, one-step training with recursive scoring, and
+  `year` as a numeric feature.
 - It does **not** explain *why* rents move. There are no causal claims; postcode and
   bedroom effects are associations within a specific forecasting pipeline.
 - It has **no audited accuracy beyond three quarters ahead**. Horizons 4–8 ship with
   calibrated but unverified bands.
+- The audited gain over persistence is about **2 AUD/week**. That is a stable ranking on
+  this panel, not a large change in a typical group median.
 - It assumes the measurement process is stable. A change in RTBA lodgement coverage,
   suppression rules or the moving-annual definition would break the lag relationships the
   model relies on, silently.
 - It carries no vintage realism: revisions and publication delays are not simulated.
+- It does **not** compare against classical time-series baselines (ETS, ARIMA, pooled AR
+  on \(\Delta\)). Persistence is the nested random walk; Huber with calendar features is
+  a robust drift-plus-seasonality model. Those, not XGBoost, are the natural next
+  competitors.
+- It is **not** a new algorithm, a new evaluation method, or a result that would change
+  how a forecasting team that already uses time-series cross-validation works. It is a
+  technical note with receipts on one overlapping official median.
 
 ## 9. Open gaps and the next experiment
 
@@ -369,11 +427,17 @@ nearly quadruples in width over eight quarters. Full per-series forecasts are in
    outcomes; until then horizons 4–8 are unverified.
 3. **A real tuning budget for the tree families**, using validation data only. The current
    grid is fixed and arguably under-serves boosting.
-4. **Quantile or conformal intervals** instead of symmetric empirical half-widths, which
+4. **Classical time-series baselines** on the same recursive protocol: ETS or ARIMA per
+   series, and a pooled AR on \(\Delta\). Persistence and Huber-with-calendar are already
+   close to that family; the missing comparison is the one that would interpret the win.
+5. **Recursive training or a direct eight-horizon head**, so the bake-off no longer fits
+   one-step residuals and then scores a roll-forward. Dropping or dummy-coding `year`
+   would also isolate whether linear drift extrapolation is doing the work.
+6. **Quantile or conformal intervals** instead of symmetric empirical half-widths, which
    cannot express asymmetric downside risk in falling markets.
-5. **Hierarchical pooling** across suburb groups, targeted at the thin four-bedroom and
+7. **Hierarchical pooling** across suburb groups, targeted at the thin four-bedroom and
    high-price slices where error concentrates.
-6. **Drift monitoring in production**: compare realised quarters against the shipped bands
+8. **Drift monitoring in production**: compare realised quarters against the shipped bands
    and alert when observed coverage departs from nominal.
 
 ## 10. Reproducibility

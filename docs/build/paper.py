@@ -33,7 +33,7 @@ PREAMBLE = r"""\documentclass[11pt,a4paper]{article}
 \usepackage[font=small,labelfont=bf]{caption}
 \usepackage{xurl}
 \usepackage[hidelinks]{hyperref}
-\hypersetup{pdftitle={Fair temporal model selection for Victorian rental medians},
+\hypersetup{pdftitle={Measuring two-year forecast error for Victorian rental medians},
             pdfauthor={Kelvin Valani}}
 \lstset{basicstyle=\small\ttfamily, breaklines=true, columns=fullflexible,
         keepspaces=true, frame=single, framerule=0.2pt, xleftmargin=1em}
