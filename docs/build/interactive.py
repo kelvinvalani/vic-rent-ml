@@ -244,7 +244,7 @@ BODY = """
   <div class="stats">
     <div class="stat"><b>$14.87</b><span>per-week MAE on the frozen 2025 audit</span></div>
     <div class="stat"><b>11.7%</b><span>better than “rent stays the same”</span></div>
-    <div class="stat"><b>862</b><span>series forecast to 2027 Q3</span></div>
+    <div class="stat"><b>__SERIES__</b><span>series still live in 2025 Q3, all forecast to 2027 Q3</span></div>
     <div class="stat"><b>0</b><span>rows of future data used to pick the model</span></div>
   </div>
 </section>
@@ -252,8 +252,9 @@ BODY = """
 <section>
   <div class="kicker">The trap</div>
   <h2>Same model. Same features. Three ways to score it.</h2>
-  <p>Change nothing but the evaluation protocol and the headline accuracy moves by a factor of three.
-  Click a protocol.</p>
+  <p>These are not three models. They are the <b>same shipped model</b> sat three different exams.
+  A lower number here means an easier exam, not a better forecaster — only the last one asks the
+  question the product actually answers. Click a protocol.</p>
   <div class="cards" id="protocol-cards"></div>
   <p class="verdict" id="protocol-verdict"></p>
 </section>
@@ -584,10 +585,11 @@ renderBootstrap();
 
 
 def main() -> int:
-    payload = json.dumps(build_payload(), separators=(",", ":"))
+    data = build_payload()
+    payload = json.dumps(data, separators=(",", ":"))
     html = (TEMPLATE
             .replace("__STYLE__", STYLE)
-            .replace("__BODY__", BODY)
+            .replace("__BODY__", BODY.replace("__SERIES__", str(len(data["series"]))))
             .replace("__SCRIPT__", SCRIPT)
             .replace("__DATA__", payload))
     OUT.write_text(html, encoding="utf-8")

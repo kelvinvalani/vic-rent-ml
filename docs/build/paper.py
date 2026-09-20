@@ -29,124 +29,119 @@ MATH_PATTERNS = (
 )
 
 STYLE = """
-:root {
-  --ink: #0f2740;
-  --accent: #c2410c;
-  --muted: #64748b;
-  --rule: #d8e0ea;
-}
-* { box-sizing: border-box; }
+/* Typeset to imitate the LaTeX ``article'' class: Computer Modern, justified text,
+   numbered sections, booktabs rules, captions below floats. */
 body {
   margin: 0 auto;
-  max-width: 46rem;
-  padding: 3.5rem 1.5rem 4rem;
-  font-family: "Charter", "Iowan Old Style", Georgia, "Times New Roman", serif;
-  font-size: 11.2pt;
-  line-height: 1.62;
-  color: var(--ink);
+  max-width: 40rem;
+  padding: 3rem 1.5rem 4rem;
+  font-family: "Latin Modern Roman", "LM Roman 10", "CMU Serif", "Computer Modern",
+               "Liberation Serif", "Times New Roman", serif;
+  font-size: 11pt;
+  line-height: 1.42;
+  color: #000;
   background: #fff;
-  text-rendering: optimizeLegibility;
+  text-align: justify;
+  hyphens: auto;
 }
 h1 {
-  font-size: 2.05rem;
-  line-height: 1.18;
+  font-size: 1.62rem;
+  font-weight: bold;
+  line-height: 1.22;
+  text-align: center;
   margin: 0 0 1.1rem;
-  letter-spacing: -0.015em;
 }
 h2 {
-  font-size: 1.32rem;
-  margin: 2.6rem 0 0.8rem;
-  padding-top: 0.9rem;
-  border-top: 2px solid var(--ink);
+  font-size: 1.12rem;
+  font-weight: bold;
+  margin: 1.9rem 0 0.55rem;
+  text-align: left;
   page-break-after: avoid;
 }
 h3 {
-  font-size: 1.05rem;
-  margin: 1.7rem 0 0.5rem;
-  color: var(--accent);
+  font-size: 1rem;
+  font-weight: bold;
+  font-style: italic;
+  margin: 1.2rem 0 0.4rem;
+  text-align: left;
   page-break-after: avoid;
 }
-p { margin: 0 0 0.85rem; }
-a { color: var(--accent); text-decoration: none; border-bottom: 1px solid #f1c9b4; }
+p { margin: 0 0 0.55rem; }
+p + p { text-indent: 1.4em; margin-top: -0.3rem; }
+p:has(mjx-container[display="true"]) { text-indent: 0; }
+p:has(mjx-container[display="true"]) + p { text-indent: 0; }
+a { color: #000; text-decoration: none; border-bottom: 0.4pt solid #999; }
 code, pre {
-  font-family: "SFMono-Regular", "JetBrains Mono", Menlo, Consolas, monospace;
-  font-size: 0.86em;
+  font-family: "Latin Modern Mono", "LM Mono 10", "Liberation Mono", Menlo, monospace;
+  font-size: 0.88em;
+  hyphens: none;
 }
-code { background: #f1f5f9; padding: 0.08em 0.3em; border-radius: 3px; }
+code { background: none; }
 pre {
-  background: #0f2740;
-  color: #e2e8f0;
-  padding: 0.9rem 1.1rem;
-  border-radius: 6px;
+  background: #fbfbfb;
+  border: 0.4pt solid #cfcfcf;
+  color: #000;
+  padding: 0.6rem 0.8rem;
+  margin: 0.8rem 0 1rem;
   overflow-x: auto;
-  line-height: 1.5;
+  line-height: 1.38;
+  text-align: left;
   page-break-inside: avoid;
 }
-pre code { background: none; color: inherit; padding: 0; }
+pre code { background: none; padding: 0; }
 .masthead {
-  border-left: 4px solid var(--accent);
-  padding: 0.1rem 0 0.1rem 1rem;
-  margin: 0 0 2.2rem;
-  color: var(--muted);
-  font-size: 0.92rem;
-  line-height: 1.55;
+  text-align: center;
+  margin: 0 0 1.6rem;
+  font-size: 0.96rem;
+  line-height: 1.5;
 }
-.masthead strong { color: var(--ink); }
+.masthead strong { font-weight: normal; font-variant: small-caps; }
 #abstract-block {
-  background: #f6f9fc;
-  border: 1px solid var(--rule);
-  border-radius: 8px;
-  padding: 1.1rem 1.3rem 0.4rem;
-  margin-bottom: 1.6rem;
-  font-size: 0.97em;
+  margin: 0 auto 1.8rem;
+  width: 88%;
+  font-size: 0.95em;
+  line-height: 1.38;
 }
 #abstract-block h2 {
-  border: 0;
-  margin: 0 0 0.6rem;
-  padding: 0;
-  font-size: 0.82rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted);
+  text-align: center;
+  font-size: 0.95rem;
+  margin: 0 0 0.45rem;
 }
+#abstract-block p + p { text-indent: 1.4em; }
 table {
   border-collapse: collapse;
   width: 100%;
-  margin: 1.1rem 0 1.4rem;
-  font-size: 0.88em;
+  margin: 1rem auto 1.3rem;
+  font-size: 0.87em;
+  line-height: 1.32;
   page-break-inside: avoid;
 }
-th, td { padding: 0.42rem 0.55rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th, td { padding: 0.3rem 0.5rem; vertical-align: top; text-align: left; hyphens: none; }
 thead th {
-  text-align: left;
-  border-bottom: 1.5px solid var(--ink);
-  font-size: 0.88em;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  color: var(--muted);
+  border-top: 1pt solid #000;
+  border-bottom: 0.5pt solid #000;
+  font-weight: bold;
 }
-tbody tr:nth-child(even) { background: #f8fafc; }
-figure { margin: 1.6rem 0; page-break-inside: avoid; }
-figure img { width: 100%; border: 1px solid var(--rule); border-radius: 6px; }
+tbody tr:last-child td { border-bottom: 1pt solid #000; }
+figure { margin: 1.3rem 0; page-break-inside: avoid; text-align: center; }
+figure img { width: 100%; }
 figcaption {
-  margin-top: 0.5rem;
-  font-size: 0.83rem;
-  line-height: 1.45;
-  color: var(--muted);
+  margin-top: 0.45rem;
+  font-size: 0.84rem;
+  line-height: 1.35;
+  text-align: left;
 }
-figcaption b { color: var(--ink); }
+figcaption b { font-weight: bold; }
 blockquote {
-  margin: 1.2rem 0;
-  padding: 0.1rem 1rem;
-  border-left: 3px solid var(--rule);
-  color: var(--muted);
+  margin: 0.9rem 1.6rem;
+  font-size: 0.95em;
 }
-ul, ol { padding-left: 1.2rem; }
-li { margin-bottom: 0.35rem; }
-mjx-container[display="true"] { margin: 1.1rem 0 !important; }
-@page { size: A4; margin: 17mm 16mm 19mm; }
+ul, ol { padding-left: 1.4rem; margin: 0.5rem 0 0.8rem; }
+li { margin-bottom: 0.18rem; }
+mjx-container[display="true"] { margin: 0.9rem 0 !important; }
+@page { size: A4; margin: 22mm 21mm 24mm; }
 @media print {
-  body { padding: 0; max-width: none; font-size: 10.4pt; }
+  body { padding: 0; max-width: none; font-size: 10.5pt; }
   a { border-bottom: 0; }
 }
 """
@@ -178,7 +173,7 @@ def _number_figures(html: str) -> str:
         alt, src = match.group(1), match.group(2)
         return (
             f'<figure><img src="{src}" alt="{alt}">'
-            f'<figcaption><b>Figure {counter["n"]}.</b> {alt}</figcaption></figure>'
+            f'<figcaption><b>Figure {counter["n"]}:</b> {alt}</figcaption></figure>'
         )
 
     return re.sub(r'<p><img alt="([^"]*)" src="([^"]+)"\s*/?></p>', replace, html)
