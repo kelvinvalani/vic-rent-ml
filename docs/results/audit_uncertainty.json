@@ -1,0 +1,53 @@
+{
+  "winner": "huber_delta@location",
+  "baseline": "naive_persist",
+  "metric": "equal-horizon mean MAE (AUD/week)",
+  "note": "Bootstrap resamples whole suburb groups with replacement; intervals describe sampling variability of the measured gap on this panel, not out-of-sample guarantees.",
+  "windows": [
+    {
+      "window": "validation (2018 Q4 \u2013 2021 Q4 origins)",
+      "origins": [
+        "2018 Q4",
+        "2019 Q4",
+        "2020 Q4",
+        "2021 Q4"
+      ],
+      "targets": "2019 Q1 \u2013 2023 Q4",
+      "pairs": 26651,
+      "series": 847,
+      "winner_mae": 23.798757689998325,
+      "baseline_mae": 25.982467402475937,
+      "series_win_rate": 0.6458087367178277,
+      "bootstrap": {
+        "observed_mae_gap": 2.1837097124776115,
+        "ci95_low": 1.5979378496584877,
+        "ci95_high": 2.7895358064070566,
+        "share_of_draws_favouring_winner": 1.0,
+        "clusters": 146,
+        "draws": 2000
+      },
+      "relative_improvement_pct": 8.404550956040149
+    },
+    {
+      "window": "frozen-winner audit (2024 Q4 origin)",
+      "origins": [
+        "2024 Q4"
+      ],
+      "targets": "2025 Q1 \u2013 2025 Q3",
+      "pairs": 2472,
+      "series": 829,
+      "winner_mae": 14.87182447306823,
+      "baseline_mae": 16.85061389554134,
+      "series_win_rate": 0.632086851628468,
+      "bootstrap": {
+        "observed_mae_gap": 1.9787894224731097,
+        "ci95_low": 1.4506927479016074,
+        "ci95_high": 2.49006013399695,
+        "share_of_draws_favouring_winner": 1.0,
+        "clusters": 146,
+        "draws": 2000
+      },
+      "relative_improvement_pct": 11.743129566316252
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "python": "3.10.12",
+  "dependencies": {
+    "numpy": "2.2.6",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.7.2",
+    "xgboost": "3.2.0",
+    "joblib": "1.5.3"
+  },
+  "audit_metrics": {
+    "test_mae": 14.87182447306823,
+    "test_rmse": 28.188107491685113,
+    "test_n": 2472
+  },
+  "published_audit_metrics": {
+    "model": "huber_delta@location",
+    "test_mae": 14.87182447251211,
+    "test_rmse": 28.188107490677513,
+    "test_n": 2472
+  }
+}

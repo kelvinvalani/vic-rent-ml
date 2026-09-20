@@ -77,4 +77,4 @@ A postcode that maps to several groups returns their median forecast and sets `i
 
 ## What “good” means here
 
-On this dataset a robust linear model beat tuned trees. That is a result for **this** smooth overlapping median, this grid, and this protocol. It is not a claim that Huber is generally better than XGBoost. The next bake-off can replace the winner without changing the serving contract.
+On this dataset a robust linear model beat a lightly tuned tree grid. That is a result for **this** smooth overlapping median, this grid, and this protocol. It is not a claim that Huber is generally better than XGBoost. Persistence is within about $2/week of the winner. The next bake-off can replace the winner without changing the serving contract.

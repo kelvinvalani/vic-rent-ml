@@ -51,11 +51,15 @@ dev = [
 viz = [
     "matplotlib>=3.7.0",
 ]
+docs = [
+    "matplotlib>=3.7.0",
+    "pillow>=9.0.0",
+]
 
 [project.urls]
 Homepage = "https://github.com/kelvinvalani/vic-rent-ml"
 Documentation = "https://github.com/kelvinvalani/vic-rent-ml/blob/main/docs/HOW_IT_WORKS.md"
-Paper = "https://github.com/kelvinvalani/vic-rent-ml/blob/main/docs/RESEARCH_PAPER.md"
+Paper = "https://github.com/kelvinvalani/vic-rent-ml/blob/main/docs/vic-rent-ml-paper.pdf"
 Issues = "https://github.com/kelvinvalani/vic-rent-ml/issues"
 
 [project.scripts]

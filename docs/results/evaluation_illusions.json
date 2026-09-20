@@ -1,0 +1,21 @@
+{
+  "shuffled_split_one_step": {
+    "mae": 7.22631179843976,
+    "rmse": 14.44330953541127,
+    "r2_on_level": 0.9934070652487811,
+    "n": 15239
+  },
+  "temporal_split_one_step": {
+    "mae": 12.044771839309337,
+    "rmse": 19.84153430953014,
+    "r2_on_level": 0.9895108338234365,
+    "n": 6708
+  },
+  "recursive_eight_horizon": {
+    "mae": 23.798757689998325,
+    "mae_horizon_1": 9.163526396190822,
+    "mae_horizon_8": 40.239963965118804,
+    "n": 26651
+  },
+  "note": "Same estimator, same features. Only the evaluation protocol changes. Shuffled splits let overlapping moving-annual windows and neighbouring quarters of the same series appear on both sides of the split; one-step scoring hands the model an observed lag it will not have in production."
+}
